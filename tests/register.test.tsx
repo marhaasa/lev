@@ -8,11 +8,11 @@ const SESSION = { cwd: '/work', surface: 'terminal', isInteractive: true } as co
 const NOW = Date.UTC(2026, 9, 22, 10, 0, 0)
 const COMPOSE = { model: 'm', promptModel: 'm', surfaces: ['terminal'], tools: [], outputStyle: null, traits: [] } as const
 const PANE = {
-  plugin: 'zpd',
+  plugin: 'lev',
   component: 'Pane',
-  requestId: 'zpd',
+  requestId: 'lev',
   props: {
-    title: 'ZPD',
+    title: 'lev',
     isFocused: false,
     bodyColumns: 60,
     placement: 'dock',
@@ -44,7 +44,7 @@ function worldOf(on: On, entries?: Readonly<Record<string, unknown>>): World {
   on('tool.register', (_, e) => {
     world.tools.push(e.name)
 
-    return { value: { tool: `mcp__zpd__${e.name}` } }
+    return { value: { tool: `mcp__lev__${e.name}` } }
   })
   on('ui.open', (_, e) => {
     world.opened.push(e.id)
@@ -74,10 +74,10 @@ function worldOf(on: On, entries?: Readonly<Record<string, unknown>>): World {
 const ORIGIN = { kind: 'composer' } as const
 const PRESENTATION = { isFullscreen: true, columns: 120 } as const
 
-/** `/zpd <args>` as the person types it. */
-const runOf = ($: Engine) => (args: string) => $.command.run({ command: 'zpd', args, origin: ORIGIN, presentation: PRESENTATION })
+/** `/lev <args>` as the person types it. */
+const runOf = ($: Engine) => (args: string) => $.command.run({ command: 'lev', args, origin: ORIGIN, presentation: PRESENTATION })
 
-/** The learner model as the plugin holds it, read back through `/zpd json`. */
+/** The learner model as the plugin holds it, read back through `/lev json`. */
 async function storedOf($: Engine): Promise<Profile> {
   const dump = await runOf($)('json')
   const text = dump.text ?? ''
@@ -94,8 +94,8 @@ test('the start registers the two tools and the command, counts the session and 
   await $.session.start(SESSION)
 
   expect(world.tools.sort()).toEqual(['profile', 'record'])
-  expect(world.commands).toEqual(['zpd'])
-  expect(world.status.at(-1)).toBe('zpd · balanced · 0 in zone')
+  expect(world.commands).toEqual(['lev'])
+  expect(world.status.at(-1)).toBe('lev · balanced · 0 in zone')
 
   const stored = await storedOf($)
 
@@ -115,21 +115,21 @@ test('the record tool applies the contingent shift and tells the model the new l
   worldOf(on)
   await $.session.start(SESSION)
 
-  const first = await $.tool.call({ tool: 'mcp__zpd__record', skill: 'Git Rebase', kind: 'success' })
+  const first = await $.tool.call({ tool: 'mcp__lev__record', skill: 'Git Rebase', kind: 'success' })
 
   expect(first.deny).toBeUndefined()
   expect(String(first.result)).toContain('git-rebase: new → proximal L1 orient')
 
-  const second = await $.tool.call({ tool: 'mcp__zpd__record', skill: 'git-rebase', kind: 'success' })
+  const second = await $.tool.call({ tool: 'mcp__lev__record', skill: 'git-rebase', kind: 'success' })
 
   expect(String(second.result)).toContain('→ independent')
   expect(String(second.result)).toContain('hand it over')
 
-  const bad = await $.tool.call({ tool: 'mcp__zpd__record', skill: 'git-rebase', kind: 'nope' })
+  const bad = await $.tool.call({ tool: 'mcp__lev__record', skill: 'git-rebase', kind: 'nope' })
 
   expect(bad.deny).toContain('kind must be one of')
 
-  const read = await $.tool.call({ tool: 'mcp__zpd__profile', skill: 'git-rebase' })
+  const read = await $.tool.call({ tool: 'mcp__lev__profile', skill: 'git-rebase' })
 
   expect(String(read.result)).toContain('git-rebase: independent')
   expect(String(read.result)).toContain('success → independent L0')
@@ -145,22 +145,22 @@ test('the system prompt gets a session section with the protocol and the snapsho
   const section = composed.sections.at(-1)
 
   expect(composed.sections[0]?.id).toBe('intro')
-  expect(section?.id).toBe('zpd:protocol')
+  expect(section?.id).toBe('lev:protocol')
   expect(section?.scope).toBe('session')
   expect(section?.text).toContain('git-rebase L3 partial')
   expect(section?.text).toContain('How to work in balanced mode')
-  expect(section?.text).toContain('mcp__zpd__record')
+  expect(section?.text).toContain('mcp__lev__record')
 
   const bare = await $.prompt.compose({ ...COMPOSE, traits: ['bare'] })
 
   expect(bare.sections.map(s => s.id)).toEqual(['intro'])
 })
 
-test('a record by the model does not move the snapshot the prompt reads; a /zpd command does', async ($, on) => {
+test('a record by the model does not move the snapshot the prompt reads; a /lev command does', async ($, on) => {
   const run = runOf($)
   worldOf(on)
   await $.session.start(SESSION)
-  await $.tool.call({ tool: 'mcp__zpd__record', skill: 'react-hooks', kind: 'exposed' })
+  await $.tool.call({ tool: 'mcp__lev__record', skill: 'react-hooks', kind: 'exposed' })
 
   const before = await $.prompt.compose(COMPOSE)
 
@@ -174,7 +174,7 @@ test('a record by the model does not move the snapshot the prompt reads; a /zpd 
   expect(after.sections.at(-1)?.text).toContain('goals (★): react-hooks')
 })
 
-test('/zpd mode learn switches the mode and the Stop check then holds a turn that changed files until a record lands', async ($, on) => {
+test('/lev mode learn switches the mode and the Stop check then holds a turn that changed files until a record lands', async ($, on) => {
   const run = runOf($)
   const world = worldOf(on)
 
@@ -184,7 +184,7 @@ test('/zpd mode learn switches the mode and the Stop check then holds a turn tha
 
   expect(switched.text).toContain('Mode: learn')
   expect(switched.context?.[0]).toContain('learn')
-  expect(world.status.at(-1)).toContain('zpd · learn')
+  expect(world.status.at(-1)).toContain('lev · learn')
 
   await $.turn.start({ text: 'fix it', turnId: 't1' })
   await $.tool.call({ tool: 'Edit', file_path: '/work/a.ts', old_string: 'a', new_string: 'b' })
@@ -197,7 +197,7 @@ test('/zpd mode learn switches the mode and the Stop check then holds a turn tha
 
   expect(second.block).toBeUndefined()
 
-  await $.tool.call({ tool: 'mcp__zpd__record', skill: 'typescript-generics', kind: 'exposed' })
+  await $.tool.call({ tool: 'mcp__lev__record', skill: 'typescript-generics', kind: 'exposed' })
 
   const recorded = await $.classic.Stop({ stop_hook_active: false })
 
@@ -236,7 +236,7 @@ test('in balanced mode nothing is held; a nudge is logged for unrecorded work, t
 
   expect(world.logs.length).toBe(1)
   expect(world.logs[0]).toContain('1 edit this turn')
-  expect(world.status.at(-1)).toBe('zpd · balanced · 0 in zone · 1 edits, 0 recorded')
+  expect(world.status.at(-1)).toBe('lev · balanced · 0 in zone · 1 edits, 0 recorded')
 
   await $.turn.start({ text: 'and this', turnId: 't2' })
   await $.tool.call({ tool: 'Edit', file_path: '/work/b.ts', old_string: 'a', new_string: 'b' })
@@ -263,7 +263,7 @@ test('in ship mode there is no nudge and the prompt section is short', async ($,
   expect(section?.text).not.toContain('Support levels')
 })
 
-test('/zpd status, goal, forget and reset read and write the model', async ($, on) => {
+test('/lev status, goal, forget and reset read and write the model', async ($, on) => {
   const run = runOf($)
   worldOf(on)
   await $.session.start(SESSION)
@@ -288,7 +288,7 @@ test('/zpd status, goal, forget and reset read and write the model', async ($, o
 
   const unsure = await run('reset')
 
-  expect(unsure.text).toContain('/zpd reset confirm')
+  expect(unsure.text).toContain('/lev reset confirm')
 
   await run('set git-rebase beyond')
   await run('reset confirm')
@@ -300,7 +300,7 @@ test('/zpd status, goal, forget and reset read and write the model', async ($, o
 
   const help = await run('whatever')
 
-  expect(help.text).toContain('/zpd mode <m>')
+  expect(help.text).toContain('/lev mode <m>')
 })
 
 test('the pane lists skills by zone on every surface, and its buttons switch the mode', async ($, on) => {
@@ -355,5 +355,5 @@ test('the pane opens unasked only where the layout docks it beside the transcrip
   await $.session.start(SESSION)
   await $.ui.render({ ...band, viewport: { columns: 200, rows: 40, isFullscreen: true } })
 
-  expect(world.opened).toEqual(['zpd'])
+  expect(world.opened).toEqual(['lev'])
 })

@@ -1,5 +1,5 @@
 /**
- * The zpd plugin's state contract.
+ * The lev plugin's state contract.
  *
  * The learner model lives in `$.store` (across sessions) and is mirrored into
  * `$.state` so the pane redraws when it changes; the session's counters live
@@ -72,7 +72,7 @@ export type SessionStats = {
 
 declare module 'claude-code' {
   interface PluginState {
-    zpd: {
+    lev: {
       profile: Profile | null
       stats: SessionStats
     }

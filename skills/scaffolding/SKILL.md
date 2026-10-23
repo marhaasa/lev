@@ -5,7 +5,7 @@ description: How to scaffold a step inside someone's zone of proximal developmen
 
 # Scaffolding a step
 
-The zpd plugin's system-prompt section says *what* to do at each support level. This skill is the *how*. It draws on Wood, Bruner and Ross (1976), who named six things a tutor does, and on Wood and Middleton (1975), who showed that the tutors whose learners improved most were the ones who adjusted help contingently: more after a failure, less after a success, one step at a time.
+The lev plugin's system-prompt section says *what* to do at each support level. This skill is the *how*. It draws on Wood, Bruner and Ross (1976), who named six things a tutor does, and on Wood and Middleton (1975), who showed that the tutors whose learners improved most were the ones who adjusted help contingently: more after a failure, less after a success, one step at a time.
 
 ## The six functions, as moves you can make
 
@@ -45,7 +45,7 @@ Keep it to one sentence. Do not answer it yourself in the same message. If they 
 
 After each attempt, record it and move the level by exactly one:
 
-- They did the step → `mcp__zpd__record` with `success` → next time one level less.
+- They did the step → `mcp__lev__record` with `success` → next time one level less.
 - They could not → `struggle` → next time one level more, at once, in this same turn if there is time.
 - They explained it back correctly → `explained` → counts as a success.
 - You did it for them → `exposed` → no change, but it counts; three exposures bring a `beyond` skill into the zone.

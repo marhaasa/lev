@@ -52,7 +52,7 @@ export const ZONE_LABEL: Record<Zone, string> = {
 export const MODE_BLURB: Record<Mode, string> = {
   learn: 'Claude hands over what you can do, scaffolds what is in your zone, and ends such turns with one check question.',
   balanced: 'Claude does the work, narrates the why for skills in your zone, and offers small handovers when they are cheap.',
-  ship: 'Claude just does the work. Run /zpd:review before you leave to turn the session into learning.',
+  ship: 'Claude just does the work. Run /lev:review before you leave to turn the session into learning.',
 }
 
 export const isZone = (x: unknown): x is Zone => typeof x === 'string' && (ZONES as readonly string[]).includes(x)
@@ -418,21 +418,21 @@ export function statusLineOf(profile: Profile, stats: SessionStats): string {
   const inZone = countOf(profile, 'proximal')
   const work = stats.sessionEdits > 0 ? ` · ${stats.sessionEdits} edits, ${stats.sessionRecords} recorded` : ''
 
-  return `zpd · ${profile.mode} · ${inZone} in zone${work}`
+  return `lev · ${profile.mode} · ${inZone} in zone${work}`
 }
 
-/** `/zpd status`: the map as text. */
+/** `/lev status`: the map as text. */
 export function statusTextOf(profile: Profile, stats: SessionStats, width: number): string {
   const grouped = groupSkills(profile)
   const nameWidth = Math.max(10, Math.min(28, width - 30))
   const lines: string[] = []
 
-  lines.push(`ZPD · mode ${profile.mode} · session ${profile.sessions} · ${stats.sessionEdits} edits, ${stats.sessionRecords} recorded this session`)
+  lines.push(`lev · mode ${profile.mode} · session ${profile.sessions} · ${stats.sessionEdits} edits, ${stats.sessionRecords} recorded this session`)
   lines.push(MODE_BLURB[profile.mode])
   lines.push('')
 
   if (Object.keys(profile.skills).length === 0) {
-    lines.push('No skills placed yet. Claude places them as you work, or run /zpd:assess <skill> to place one now.')
+    lines.push('No skills placed yet. Claude places them as you work, or run /lev:assess <skill> to place one now.')
   }
 
   for (const zone of ZONES) {
@@ -460,7 +460,7 @@ export function statusTextOf(profile: Profile, stats: SessionStats, width: numbe
     lines.push(`goals: ${goals.join(', ')}`)
   }
 
-  lines.push('/zpd help · /zpd:assess <skill> places one · /zpd:explain teaches back · /zpd:review before you leave')
+  lines.push('/lev help · /lev:assess <skill> places one · /lev:explain teaches back · /lev:review before you leave')
 
   return lines.join('\n')
 }
@@ -517,7 +517,7 @@ export function profileTextOf(profile: Profile, skill?: string): string {
 export function nudgeTextOf(stats: SessionStats): string {
   const edits = `${stats.turnEdits} edit${stats.turnEdits === 1 ? '' : 's'}`
 
-  return `zpd: ${edits} this turn, nothing recorded in your learner model · /zpd:explain to teach it back · /zpd:review before you leave`
+  return `lev: ${edits} this turn, nothing recorded in your learner model · /lev:explain to teach it back · /lev:review before you leave`
 }
 
 /** Splits a command's arguments on whitespace, honouring double quotes. */

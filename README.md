@@ -1,10 +1,12 @@
-# zpd
+# lev
 
 **Keep learning while Claude does the work.** A Claude Code plugin built on Lev Vygotsky's Zone of Proximal Development.
 
 When an AI does the work, the human stops learning. Not because the AI hides anything, but because learning happens in a narrow band: the things you cannot yet do alone but can do with help. Work below that band is routine; work above it is noise; an AI that quietly does everything in the band takes away the only part worth keeping. Vygotsky named that band the zone of proximal development (ZPD) and described the role of the *more knowledgeable other*: someone who gives exactly as much help as you need, then less as you grow.
 
-zpd makes Claude Code that other. It keeps a learner model of you across sessions, puts the protocol for working in your zone into Claude's system prompt, gives Claude tools to read and update the model as you work together, and adds a few commands for the moves that need a person in the loop: placing a skill, teaching it back, handing work over, reviewing a session.
+lev makes Claude Code that other. It keeps a learner model of you across sessions, puts the protocol for working in your zone into Claude's system prompt, gives Claude tools to read and update the model as you work together, and adds a few commands for the moves that need a person in the loop: placing a skill, teaching it back, handing work over, reviewing a session.
+
+The name is Lev Vygotsky's first name. It is also the first three letters of *level*, which is what the support ladder is made of.
 
 ## What it looks like
 
@@ -30,12 +32,12 @@ Behind that answer: the learner model said `sql-window-functions` was proximal a
 At the prompt of a terminal session:
 
 ```
-/plugin install zpd --marketplace marhaasa/zpd
+/plugin install lev --marketplace marhaasa/lev
 ```
 
-Answer `y` to add the marketplace, then pick a scope (user is the usual one). From a shell, `claude plugin install zpd --marketplace marhaasa/zpd`. In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `marhaasa/zpd`, then Add plugin.
+Answer `y` to add the marketplace, then pick a scope (user is the usual one). From a shell, `claude plugin install lev --marketplace marhaasa/lev`. In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `marhaasa/lev`, then Add plugin.
 
-To run it from a clone while developing: `claude --plugin-dir /path/to/zpd`.
+To run it from a clone while developing: `claude --plugin-dir /path/to/lev`.
 
 Requires Claude Code 2.1.308 or later: the hooks module uses the function-hooks API (early access), and the engine lays its type declarations beside the plugin when it loads it.
 
@@ -54,11 +56,11 @@ One entry per skill. Skills are named in lowercase-kebab-case (`git-rebase`, `re
 | `isGoal` | A skill you want to move toward independence |
 | `evidence` | The last 24 observations, each with a kind, the resulting zone and level, and a note |
 
-The model is stored in the plugin's own key-value store under your Claude Code configuration directory. It is yours, not the project's: skills travel with you across repositories. `/zpd json` prints it.
+The model is stored in the plugin's own key-value store under your Claude Code configuration directory. It is yours, not the project's: skills travel with you across repositories. `/lev json` prints it.
 
 ### The support ladder
 
-Wood, Bruner and Ross described scaffolding as a set of things a tutor does; Wood and Middleton found that what distinguished effective tutors was *contingency*: more help after a failure, less after a success, one step at a time. zpd makes that discrete:
+Wood, Bruner and Ross described scaffolding as a set of things a tutor does; Wood and Middleton found that what distinguished effective tutors was *contingency*: more help after a failure, less after a success, one step at a time. lev makes that discrete:
 
 | Level | Name | What Claude does |
 |---|---|---|
@@ -76,35 +78,35 @@ After a success the level drops by one; after a struggle it rises by one; never 
 |---|---|
 | `learn` | Claude hands over what you can do, scaffolds what is in your zone, demonstrates what is beyond, and ends a turn that touched your zone with one check question. A turn that changed files is held once until Claude has recorded what it did. |
 | `balanced` (default) | Claude does the work, narrates the why for skills in your zone, offers a small handover when it is cheap, and records what it did. No check questions unless you ask. |
-| `ship` | Claude just does the work. No scaffolding, no questions, no recording. `/zpd:review` at the end turns the session into learning. |
+| `ship` | Claude just does the work. No scaffolding, no questions, no recording. `/lev:review` at the end turns the session into learning. |
 
-Switch with `/zpd mode learn`, or the buttons in the pane. The mode is part of the model, so it persists.
+Switch with `/lev mode learn`, or the buttons in the pane. The mode is part of the model, so it persists.
 
 ### Where the pieces live
 
-- **System prompt.** A `prompt.compose` hook appends a section with the protocol, a snapshot of the model, and the rules for the current mode. The snapshot refreshes at session start and on `/zpd` commands, never on a tool call, so the prompt cache holds through a turn.
-- **Tools.** `mcp__zpd__profile` reads the live model; `mcp__zpd__record` writes one piece of evidence and answers with the new level to use next time.
+- **System prompt.** A `prompt.compose` hook appends a section with the protocol, a snapshot of the model, and the rules for the current mode. The snapshot refreshes at session start and on `/lev` commands, never on a tool call, so the prompt cache holds through a turn.
+- **Tools.** `mcp__lev__profile` reads the live model; `mcp__lev__record` writes one piece of evidence and answers with the new level to use next time.
 - **Stop check.** In learn mode, a `classic.Stop` hook holds a turn that changed files, once, until the model has an entry for it. Turn it off with the `enforce` option.
 - **Nudges.** In learn and balanced mode, a dim line beneath an answer when Claude changed files in your zone and recorded nothing, at most every three turns. Turn it off with `nudges`.
-- **Pane.** A learning map beside the transcript: skills by zone with their level, goals starred, mode buttons. It opens by itself in the fullscreen layout on a wide terminal; `/zpd pane` opens it anywhere.
-- **Status line.** `zpd · learn · 3 in zone · 12 edits, 4 recorded`.
+- **Pane.** A learning map beside the transcript: skills by zone with their level, goals starred, mode buttons. It opens by itself in the fullscreen layout on a wide terminal; `/lev pane` opens it anywhere.
+- **Status line.** `lev · learn · 3 in zone · 12 edits, 4 recorded`.
 
 ## Commands
 
 | Command | What it does |
 |---|---|
-| `/zpd` | The map: zones, levels, goals, this session's counts |
-| `/zpd mode learn\|balanced\|ship` | Switch mode |
-| `/zpd set <skill> <zone> [0-4]` | Place a skill yourself |
-| `/zpd goal <skill>` | Toggle a goal; Claude then prefers handing it over. `/zpd goal clear` |
-| `/zpd forget <skill>` | Remove a skill |
-| `/zpd pane` | Open the learning map |
-| `/zpd json` | The raw model |
-| `/zpd reset confirm` | Start over |
-| `/zpd:assess <skill>` | **Dynamic assessment.** Claude anchors a small task in your repo, probes unaided, then adds help one level at a time; the first level at which you succeed is the placement. Five exchanges at most. |
-| `/zpd:explain [skill]` | **Teach-back.** You explain the last piece of work in your own words: what, why, what would break. Claude judges the content, corrects one misconception at most, records the result. |
-| `/zpd:handover [step]` | **Handover.** Claude plans, does the `beyond` steps, picks the first step in your zone, scaffolds it at your level, states the acceptance criterion, and waits. |
-| `/zpd:review` | **Session review.** What Claude did for you, what you did, missed handovers in your zone, what moved, and one or two skills to make goals. How ship mode pays its learning debt. |
+| `/lev` | The map: zones, levels, goals, this session's counts |
+| `/lev mode learn\|balanced\|ship` | Switch mode |
+| `/lev set <skill> <zone> [0-4]` | Place a skill yourself |
+| `/lev goal <skill>` | Toggle a goal; Claude then prefers handing it over. `/lev goal clear` |
+| `/lev forget <skill>` | Remove a skill |
+| `/lev pane` | Open the learning map |
+| `/lev json` | The raw model |
+| `/lev reset confirm` | Start over |
+| `/lev:assess <skill>` | **Dynamic assessment.** Claude anchors a small task in your repo, probes unaided, then adds help one level at a time; the first level at which you succeed is the placement. Five exchanges at most. |
+| `/lev:explain [skill]` | **Teach-back.** You explain the last piece of work in your own words: what, why, what would break. Claude judges the content, corrects one misconception at most, records the result. |
+| `/lev:handover [step]` | **Handover.** Claude plans, does the `beyond` steps, picks the first step in your zone, scaffolds it at your level, states the acceptance criterion, and waits. |
+| `/lev:review` | **Session review.** What Claude did for you, what you did, missed handovers in your zone, what moved, and one or two skills to make goals. How ship mode pays its learning debt. |
 
 The `scaffolding` skill holds the craft behind these: the six scaffolding functions as moves, the ladder worked on one skill, how to write a check question, the anti-patterns. Claude loads it when it is about to scaffold in learn mode or when a handover is not landing.
 
@@ -114,31 +116,31 @@ Shown in `/config` under the plugin's name:
 
 | Option | Default | Meaning |
 |---|---|---|
-| `pane` | `auto` | `auto` opens the pane in a fullscreen layout on a wide terminal; `command` only on `/zpd pane`; `off` never |
+| `pane` | `auto` | `auto` opens the pane in a fullscreen layout on a wide terminal; `command` only on `/lev pane`; `off` never |
 | `enforce` | `true` | The learn-mode stop check |
 | `nudges` | `true` | The dim line beneath an answer for unrecorded work |
 
 ## Theory to mechanics
 
-| Vygotsky (and those who built on him) | zpd |
+| Vygotsky (and those who built on him) | lev |
 |---|---|
 | The three bands: what one can do alone, with help, not at all | `zone`: `independent`, `proximal`, `beyond` |
 | The more knowledgeable other | Claude, under the protocol in the system prompt |
 | Scaffolding (Wood, Bruner, Ross 1976) | the five support levels; the six functions as moves in the `scaffolding` skill |
 | Contingent shift (Wood, Middleton 1975) | one level less after a success, one more after a struggle, never two |
 | Fading (Collins, Brown, Newman 1989) | two successes at low support move a skill to `independent`; Claude then hands over |
-| Internalization: from the social plane to one's own | `/zpd:explain`, and the one check question that ends a learn-mode turn |
-| Dynamic assessment: measure the zone by the help needed | `/zpd:assess` |
+| Internalization: from the social plane to one's own | `/lev:explain`, and the one check question that ends a learn-mode turn |
+| Dynamic assessment: measure the zone by the help needed | `/lev:assess` |
 | Mediation through signs; shared language | skill names as a vocabulary you and Claude both use |
 | "What a child can do with assistance today she will be able to do by herself tomorrow" | goals: `proximal` skills Claude prefers to hand over |
 
-`docs/theory.md` goes deeper, including what the theory does not say and where zpd simplifies it.
+`docs/theory.md` goes deeper, including what the theory does not say and where lev simplifies it.
 
 ## Costs and caveats
 
-- The system prompt section is about 600 tokens in learn and balanced mode, 80 in ship mode. It sits after the prompt cache boundary and changes only at session start and on `/zpd` commands.
+- The system prompt section is about 600 tokens in learn and balanced mode, 80 in ship mode. It sits after the prompt cache boundary and changes only at session start and on `/lev` commands.
 - Each record is one short tool call. In learn mode expect one or two per turn that does work; in balanced mode fewer; in ship mode none.
-- The model is only as good as the evidence. Claude judges success and struggle on results (a test, an output), but a generous judge inflates the model. `/zpd:assess` and `/zpd set` are the corrections.
+- The model is only as good as the evidence. Claude judges success and struggle on results (a test, an output), but a generous judge inflates the model. `/lev:assess` and `/lev set` are the corrections.
 - The stop check is one held turn, not a loop: the second pass always goes through. If it gets in the way, `enforce: false`.
 - Nothing here measures learning. It measures how much help was needed, which is what Vygotsky proposed as the thing to measure.
 

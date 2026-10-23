@@ -1,21 +1,21 @@
 {
-  "name": "zpd",
+  "name": "lev",
   "version": "0.1.0",
   "description": "Keeps you learning while Claude does the work. A Zone of Proximal Development harness: Claude keeps a model of what you can do alone, what you can do with help and what is still out of reach, then hands over, scaffolds or demonstrates accordingly, and fades the help as you grow.",
   "author": {
     "name": "Marius Høgli Aasarød",
     "url": "https://github.com/marhaasa"
   },
-  "homepage": "https://github.com/marhaasa/zpd",
-  "repository": "https://github.com/marhaasa/zpd",
+  "homepage": "https://github.com/marhaasa/lev",
+  "repository": "https://github.com/marhaasa/lev",
   "license": "MIT",
-  "keywords": ["learning", "vygotsky", "zpd", "scaffolding", "pedagogy", "harness"],
+  "keywords": ["learning", "vygotsky", "lev", "scaffolding", "pedagogy", "harness"],
   "types": "./types/index.d.ts",
   "userConfig": {
     "pane": {
       "type": "string",
       "title": "Learning map pane",
-      "description": "auto opens the ZPD pane beside the transcript when the terminal is wide enough; command opens it only on /zpd pane; off never opens it.",
+      "description": "auto opens the lev pane beside the transcript when the terminal is wide enough; command opens it only on /lev pane; off never opens it.",
       "default": "auto",
       "options": ["auto", "command", "off"]
     },

@@ -10,7 +10,7 @@ import type { Mode, Profile } from '../types'
 
 import { EXPOSURES_TO_ENTER, goalsOf, groupSkills, SUPPORT, supportNameOf, ZONE_MOVE, ZONES } from './model'
 
-export const SECTION_ID = 'zpd:protocol'
+export const SECTION_ID = 'lev:protocol'
 
 const MODE_RULES: Record<Mode, string[]> = {
   learn: [
@@ -26,7 +26,7 @@ const MODE_RULES: Record<Mode, string[]> = {
     '2. Offer a handover for one small step when it is in their zone and would cost them under a minute; take no for an answer.',
     '3. Record `exposed` for proximal and independent skills you did yourself, `success` or `struggle` for steps they did. No check questions unless asked.',
   ],
-  ship: ['Do the work. No scaffolding, no questions, no recording. If the session was long, mention /zpd:review once at the end: it turns the session into learning.'],
+  ship: ['Do the work. No scaffolding, no questions, no recording. If the session was long, mention /lev:review once at the end: it turns the session into learning.'],
 }
 
 function snapshotLines(profile: Profile): string[] {
@@ -76,15 +76,15 @@ export function protocolOf(profile: Profile, snapshotAt: string): string {
 
   if (mode === 'ship') {
     return [
-      '# Zone of proximal development (zpd plugin, ship mode)',
+      '# Zone of proximal development (lev plugin, ship mode)',
       '',
-      'The person keeps a learner model of their own skills through the zpd plugin. Mode is ship: ' + MODE_RULES.ship[0],
-      'Tools: mcp__zpd__profile reads the model; mcp__zpd__record writes evidence (used by /zpd:review). Do not call them unasked in this mode.',
+      'The person keeps a learner model of their own skills through the lev plugin. Mode is ship: ' + MODE_RULES.ship[0],
+      'Tools: mcp__lev__profile reads the model; mcp__lev__record writes evidence (used by /lev:review). Do not call them unasked in this mode.',
     ].join('\n')
   }
 
   return [
-    '# Zone of proximal development (zpd plugin)',
+    '# Zone of proximal development (lev plugin)',
     '',
     `The person you work with wants to keep learning while you do the work. You are their more knowledgeable other: your job is to work in the zone between what they can do alone and what they cannot do even with help, giving exactly as much help as the last attempt showed they need, and less as they grow. Mode: ${mode}.`,
     '',
@@ -104,9 +104,9 @@ export function protocolOf(profile: Profile, snapshotAt: string): string {
     '- not listed: unknown. Ask one short question ("Have you done X before?") or infer from their words, record `assessed` with your best guess, and say you guessed.',
     '',
     '## Tools',
-    '- mcp__zpd__profile: the live model (fresher than this snapshot). Call it when a task touches a skill you are unsure about, with `skill` for one entry and its history.',
-    '- mcp__zpd__record: write evidence. kind: `success` (they did the step at the current support) · `struggle` (they could not) · `explained` (a teach-back passed) · `exposed` (you did it fully in front of them) · `assessed` (after an assessment; give zone and support). Its result names the new level: follow it next time.',
-    '- The person has /zpd (map, mode, goals), /zpd:assess <skill>, /zpd:explain, /zpd:handover and /zpd:review. Suggest one when it fits. Do not nag.',
+    '- mcp__lev__profile: the live model (fresher than this snapshot). Call it when a task touches a skill you are unsure about, with `skill` for one entry and its history.',
+    '- mcp__lev__record: write evidence. kind: `success` (they did the step at the current support) · `struggle` (they could not) · `explained` (a teach-back passed) · `exposed` (you did it fully in front of them) · `assessed` (after an assessment; give zone and support). Its result names the new level: follow it next time.',
+    '- The person has /lev (map, mode, goals), /lev:assess <skill>, /lev:explain, /lev:handover and /lev:review. Suggest one when it fits. Do not nag.',
     '',
     `## How to work in ${mode} mode`,
     ...MODE_RULES[mode],

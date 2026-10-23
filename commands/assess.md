@@ -5,7 +5,7 @@ argument-hint: <skill>
 
 Run a dynamic assessment of the skill `$ARGUMENTS` with the person. Vygotsky's rule: a zone is measured by how much help someone needs to succeed, not by what they get wrong unaided.
 
-First call `mcp__zpd__profile` with `skill: "$ARGUMENTS"`. If the skill is already placed, say where in one line and ask whether they want to re-check it. If `$ARGUMENTS` is empty, ask which skill to assess and stop.
+First call `mcp__lev__profile` with `skill: "$ARGUMENTS"`. If the skill is already placed, say where in one line and ask whether they want to re-check it. If `$ARGUMENTS` is empty, ask which skill to assess and stop.
 
 ## Procedure (five exchanges at most)
 
@@ -16,7 +16,7 @@ First call `mcp__zpd__profile` with `skill: "$ARGUMENTS"`. If the skill is alrea
    - succeeded at L0 → zone `independent`, support 0
    - succeeded at L1, L2 or L3 → zone `proximal`, support = that level
    - did not succeed even with L3 → zone `beyond`, support 4
-5. **Record it.** Call `mcp__zpd__record` with `kind: "assessed"`, the zone, the support, and a one-line `note` naming the sticking point.
+5. **Record it.** Call `mcp__lev__record` with `kind: "assessed"`, the zone, the support, and a one-line `note` naming the sticking point.
 6. **Tell them the result in two lines:** where the skill sits and what you will do differently from now on (hand over, scaffold at level N, or model and narrate).
 
 ## Rules
