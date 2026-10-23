@@ -1,0 +1,15 @@
+{
+  "name": "zpd",
+  "owner": { "name": "Marius Høgli Aasarød", "url": "https://github.com/marhaasa" },
+  "metadata": {
+    "description": "A Zone of Proximal Development harness for Claude Code: keep the human learning while the AI does the work."
+  },
+  "plugins": [
+    {
+      "name": "zpd",
+      "source": "./",
+      "description": "Keeps you learning while Claude does the work: a learner model, contingent scaffolding that fades, teach-back checks and a live learning map.",
+      "category": "learning"
+    }
+  ]
+}

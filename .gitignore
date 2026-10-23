@@ -1,0 +1,8 @@
+# Laid by Claude Code when it loads the plugin from this folder; regenerated per build.
+.claude-plugin/types/
+.mcpb-cache/
+node_modules/
+.DS_Store
+*.log
+*~
+*.swp

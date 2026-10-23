@@ -1,0 +1,35 @@
+{
+  "name": "zpd",
+  "version": "0.1.0",
+  "description": "Keeps you learning while Claude does the work. A Zone of Proximal Development harness: Claude keeps a model of what you can do alone, what you can do with help and what is still out of reach, then hands over, scaffolds or demonstrates accordingly, and fades the help as you grow.",
+  "author": {
+    "name": "Marius Høgli Aasarød",
+    "url": "https://github.com/marhaasa"
+  },
+  "homepage": "https://github.com/marhaasa/zpd",
+  "repository": "https://github.com/marhaasa/zpd",
+  "license": "MIT",
+  "keywords": ["learning", "vygotsky", "zpd", "scaffolding", "pedagogy", "harness"],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "pane": {
+      "type": "string",
+      "title": "Learning map pane",
+      "description": "auto opens the ZPD pane beside the transcript when the terminal is wide enough; command opens it only on /zpd pane; off never opens it.",
+      "default": "auto",
+      "options": ["auto", "command", "off"]
+    },
+    "enforce": {
+      "type": "boolean",
+      "title": "Learn-mode check",
+      "description": "In learn mode, a turn that changed files is held once until Claude has recorded what it did in your learner model and, for a skill in your zone, ended with a check question.",
+      "default": true
+    },
+    "nudges": {
+      "type": "boolean",
+      "title": "Nudges",
+      "description": "Show a dim one-line note beneath an answer when Claude did work in your zone and recorded nothing, at most every few turns. Never shown in ship mode.",
+      "default": true
+    }
+  }
+}

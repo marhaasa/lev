@@ -1,0 +1,4 @@
+{
+  "description": "The learner model (zones, support levels, evidence), the ZPD section of the system prompt, the profile and record tools, the /zpd command, the learning-map pane, the learn-mode stop check and the nudges.",
+  "modules": ["./register.tsx"]
+}
